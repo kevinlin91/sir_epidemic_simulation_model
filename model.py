@@ -135,7 +135,8 @@ class SIR_model():
                         selection = random.choices(neighbor, k=3)
                         for nei in neighbor:
                             if self.G.nodes[nei]['status'].split('_')[0] == 'I':
-                                count +=1                    
+                                count +=1
+                                break
                     #mos_information_update_after_contact
                     ill_mos += count
                     health_mos = total_mos - ill_mos
