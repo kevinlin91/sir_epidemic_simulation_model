@@ -4,6 +4,7 @@ import pickle
 import random
 import queue
 from copy import deepcopy
+import json
 
 class SIR_model():
 
@@ -46,12 +47,17 @@ class SIR_model():
             pickle.dump(G, open('./graph.pkl','wb'))
             return G
     def loading_mos(self):
-        mos_dict = dict()
-        for lining in self.lining_list:
-            date_dict = dict()
-            for i in range(365):
-                date_dict[i] = random.randint(100,300)
-            mos_dict[lining] = date_dict
+        if (os.path.isfile('./mos.pkl')):
+            return pickle.load(open('./mos.pkl','rb'))
+        else:
+        #mos_dict = dict()
+        #for lining in self.lining_list:
+        #    date_dict = dict()
+        #    for i in range(365):
+        #        date_dict[i] = random.randint(100,300)
+        #    mos_dict[lining] = date_dict
+            mos_dict = create_mos(self.lining_list)
+            pickle.dump(mos_dict, open('./mos.pkl','wb'))
         return mos_dict
 
     
@@ -59,11 +65,11 @@ class SIR_model():
         first_day_mos_rate = 0.1
         effect_rate = 0.6
         queue_dict = dict()
-        for day in range(30):
+        for day in range(213):
             if day == 0:
                 for lining in self.lining_list:
                     #mos_information_update
-                    total_mos = self.mos[lining][day]
+                    total_mos = int(self.mos[lining][day])
                     ill_mos = int(total_mos * first_day_mos_rate)
                     health_mos = total_mos - ill_mos
                     queue_tmp = queue.Queue()
@@ -107,7 +113,7 @@ class SIR_model():
                             
                 for lining in self.lining_list:                    
                     #mos_information_update
-                    total_mos = self.mos[lining][day]
+                    total_mos = int(self.mos[lining][day])
                     ill_mos = self.G.nodes[lining]['ill_mos']
                     health_mos = total_mos - ill_mos
                     if day > 20:
@@ -139,6 +145,7 @@ class SIR_model():
             E_count = 0
             I_count = 0
             R_count = 0
+            S_count = 0
             for node in self.G:
                 if node not in self.lining_list:
                     status_str = self.G.nodes[node]['status'].split('_')
@@ -149,7 +156,9 @@ class SIR_model():
                         I_count +=1
                     elif status == 'R':
                         R_count +=1
-            print ('Day:', day, ' E:', E_count,' I:', I_count, ' R:', R_count)
+                    elif status == 'S':
+                        S_count +=1
+            print ('Day:', day, ' S:', S_count, ' E:', E_count,' I:', I_count, ' R:', R_count)
                 
                 
                                 
@@ -161,5 +170,6 @@ class SIR_model():
 
 if __name__ == '__main__':
     model = SIR_model()
+    #print(json.dumps(model.mos,indent = 4))
     model.simulation()
             

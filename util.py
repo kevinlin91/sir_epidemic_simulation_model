@@ -2,6 +2,7 @@ import pandas as pd
 import pickle
 import networkx as nx
 import random
+import numpy as np
 
 def connect(age):
     if (age == '0歲' or age == '1歲' or age == '2歲' or age == '3歲' or \
@@ -40,9 +41,29 @@ def create_graph(population, lining_list, lining_neighbor):
     #print (G.nodes['1'])
     #print (G.nodes['嘉芳里'])
 
+def create_mos(lining_list):
+    mos_dict = dict()
+    mos_count = pd.read_csv('./mos_data.csv', encoding='utf8')
+    #print (mos_count)
+    for lining in lining_list:
+        mos_count[lining] = mos_count[lining].replace(0,np.nan)
+        mos_sum = mos_count[lining].sum()
+        mos_unique = mos_count[lining].count()
+        avg = mos_sum / mos_unique
+        mos_count[lining] = mos_count[lining].fillna(avg)
+        tmp_dict = dict()
+        for index, row in mos_count[lining].iteritems():
+            if index >= 0 and index <= 213:
+                tmp_dict[index] = row
+        mos_dict[lining] = tmp_dict    
+    return mos_dict
+
+        
 
 if __name__ == '__main__':
     #population = population_filter('新營區')
-    create_graph(pickle.load(open('./population.pkl','rb')), \
-                 pickle.load(open('./lining_list.pkl','rb')), \
-                 pickle.load(open('./lining_neighbor.pkl','rb')))
+    #create_graph(pickle.load(open('./population.pkl','rb')), \
+    #             pickle.load(open('./lining_list.pkl','rb')), \
+    #             pickle.load(open('./lining_neighbor.pkl','rb')))
+    mos_dict = create_mos(pickle.load(open('./lining_list.pkl','rb')))
+    #print (mos_dict['力行里'])
