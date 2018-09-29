@@ -44,6 +44,7 @@ def create_graph(population, lining_list, lining_neighbor):
 def create_mos(lining_list):
     mos_dict = dict()
     mos_count = pd.read_csv('./mos_data.csv', encoding='utf8')
+    print (mos_count)
     #print (mos_count)
     for lining in lining_list:
         mos_count[lining] = mos_count[lining].replace(0,np.nan)
@@ -53,7 +54,7 @@ def create_mos(lining_list):
         mos_count[lining] = mos_count[lining].fillna(avg)
         tmp_dict = dict()
         for index, row in mos_count[lining].iteritems():
-            if index >= 0 and index <= 213:
+            if index >= 56 and index <= 91:
                 tmp_dict[index] = row
         mos_dict[lining] = tmp_dict    
     return mos_dict

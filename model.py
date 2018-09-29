@@ -63,10 +63,12 @@ class SIR_model():
     
     def simulation(self):
         first_day_mos_rate = 0.1
-        effect_rate = 0.6
+        effect_rate = 0.001
         queue_dict = dict()
-        for day in range(213):
-            if day == 0:
+        start_day = 31
+        end_day = 91
+        for day in range(start_day,end_day+1):
+            if day == start_day:
                 for lining in self.lining_list:
                     #mos_information_update
                     total_mos = int(self.mos[lining][day])
@@ -85,7 +87,7 @@ class SIR_model():
                         effect_people += selection
                     effect_people = list(set(effect_people))
                     for people in effect_people:
-                        if random.random() < 0.6:
+                        if random.random() < effect_rate:
                             self.G.nodes[people]['status'] = 'E_1'
             else:
                 #status update
@@ -116,7 +118,7 @@ class SIR_model():
                     total_mos = int(self.mos[lining][day])
                     ill_mos = self.G.nodes[lining]['ill_mos']
                     health_mos = total_mos - ill_mos
-                    if day > 20:
+                    if day > 76:
                         ill_mos = ill_mos - queue_dict[lining].get()
                     #mos_contact_update
                     neighbor = [x for x in self.G.neighbors(lining)]
@@ -127,7 +129,7 @@ class SIR_model():
                     effect_people = list(set(effect_people))
                     for people in effect_people:
                         if self.G.nodes[people]['status'] == 'S':
-                            if random.random() < 0.6: 
+                            if random.random() < effect_rate: 
                                 self.G.nodes[people]['status'] = 'E_1'
                     #mos_ill_by_people
                     count = 0
@@ -144,6 +146,7 @@ class SIR_model():
                     self.G.nodes[lining]['ill_mos'] = ill_mos                    
                     queue_dict[lining].put(count)
             E_count = 0
+            I1_count = 0
             I_count = 0
             R_count = 0
             S_count = 0
@@ -153,13 +156,15 @@ class SIR_model():
                     status = status_str[0]
                     if status == 'E':
                         E_count +=1
+                    elif self.G.nodes[node]['status'] == 'I_1':
+                        I1_count +=1
                     elif status == 'I':
                         I_count +=1
                     elif status == 'R':
                         R_count +=1
                     elif status == 'S':
                         S_count +=1
-            print ('Day:', day, ' S:', S_count, ' E:', E_count,' I:', I_count, ' R:', R_count)
+            print ('Day:', day, ' S:', S_count, ' E:', E_count,' I:', I_count, ' R:', R_count, 'new_I:', I1_count)
                 
                 
                                 
