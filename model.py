@@ -63,12 +63,10 @@ class SIR_model():
     
     def simulation(self):
         first_day_mos_rate = 0.1
-        effect_rate = 0.0006
+        effect_rate = 0.001
         queue_dict = dict()
-        start_day = 44
+        start_day = 30
         end_day = 92
-        first_day_i = 12
-        first_day_i_list = [str(x) for x in random.sample(range(self.G.number_of_nodes()), first_day_i)]
         for day in range(start_day,end_day+1):
             if day == start_day:
                 for lining in self.lining_list:
@@ -88,8 +86,6 @@ class SIR_model():
                         selection = random.choices(neighbor, k=3)
                         effect_people += selection
                     effect_people = list(set(effect_people))
-                    for p in first_day_i_list:
-                        self.G.nodes[p]['status'] = 'I_1'
                     for people in effect_people:
                         if self.G.nodes[people]['status'] == 'S':
                             if random.random() < effect_rate:
@@ -125,7 +121,7 @@ class SIR_model():
                     total_mos = int(self.mos[lining][day])
                     ill_mos = self.G.nodes[lining]['ill_mos']
                     health_mos = total_mos - ill_mos
-                    if day > 76:
+                    if day > start_day + 12:
                         ill_mos = ill_mos - queue_dict[lining].get()
                     #mos_contact_update
                     neighbor = [x for x in self.G.neighbors(lining)]
