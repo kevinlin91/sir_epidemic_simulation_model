@@ -63,10 +63,12 @@ class SIR_model():
     
     def simulation(self):
         first_day_mos_rate = 0.1
-        effect_rate = 0.001
+        effect_rate = 0.0006
         queue_dict = dict()
-        start_day = 31
-        end_day = 91
+        start_day = 44
+        end_day = 92
+        first_day_i = 12
+        first_day_i_list = [str(x) for x in random.sample(range(self.G.number_of_nodes()), first_day_i)]
         for day in range(start_day,end_day+1):
             if day == start_day:
                 for lining in self.lining_list:
@@ -86,9 +88,14 @@ class SIR_model():
                         selection = random.choices(neighbor, k=3)
                         effect_people += selection
                     effect_people = list(set(effect_people))
+                    for p in first_day_i_list:
+                        self.G.nodes[p]['status'] = 'I_1'
                     for people in effect_people:
-                        if random.random() < effect_rate:
-                            self.G.nodes[people]['status'] = 'E_1'
+                        if self.G.nodes[people]['status'] == 'S':
+                            if random.random() < effect_rate:
+                                self.G.nodes[people]['status'] = 'E_1'
+                    
+                    
             else:
                 #status update
                 for node in self.G:
@@ -164,8 +171,8 @@ class SIR_model():
                         R_count +=1
                     elif status == 'S':
                         S_count +=1
-            print ('Day:', day, ' S:', S_count, ' E:', E_count,' I:', I_count, ' R:', R_count, 'new_I:', I1_count)
-                
+            #print ('Day:', day, ' S:', S_count, ' E:', E_count,' I:', I_count, ' R:', R_count, 'new_I:', I1_count)
+            print (I1_count)    
                 
                                 
                                 

@@ -54,8 +54,8 @@ def create_mos(lining_list):
         mos_count[lining] = mos_count[lining].fillna(avg)
         tmp_dict = dict()
         for index, row in mos_count[lining].iteritems():
-            if index >= 56 and index <= 91:
-                tmp_dict[index] = row
+            #if index >= 56 and index <= 91:
+            tmp_dict[index] = row
         mos_dict[lining] = tmp_dict    
     return mos_dict
 
