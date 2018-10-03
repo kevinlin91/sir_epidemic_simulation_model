@@ -67,6 +67,8 @@ class SIR_model():
         queue_dict = dict()
         start_day = 75
         end_day = 92
+        first_day_i = 59
+        first_day_i_list = [ str(x) for x in random.sample(range(self.G.number_of_nodes()), first_day_i)]
         for day in range(start_day,end_day+1):
             if day == start_day:
                 for lining in self.lining_list:
